@@ -2,9 +2,9 @@
 
 ## Tarefas
 - [X] Extrair Cabeçalho da tabela [0.0.1]
-- [ ] Extrair Corpo da tabela [0.0.2]
-- [ ] Gerar DataFrame [0.0.3]
-- [ ] Salvar em csv [0.1]
+- [X] Extrair Corpo da tabela [0.0.2]
+- [X] Gerar DataFrame [0.0.3]
+- [X] Salvar em csv [0.1]
 - [ ] Gerar executável em Windows [1.0]
 - [ ] Carregar csv [1.0.1]
 - [ ] Criar Fatores Eliminatórios [1.1]
@@ -24,6 +24,9 @@ Tutoriais:
 https://www.simplified.guide/scrapy/scrape-table
 
 ## Versões
+
+### 0.1
+- Extraindo toda a tabela e salvando em csv
 
 ### 0.0.1 (16/07/2019)
 - Extraindo o cabeçalho da tabela com os nomes das colunas
