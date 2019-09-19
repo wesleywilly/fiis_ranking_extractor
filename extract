@@ -1,1 +1,7 @@
+##!/bin/bash
+if test -d "$tables" 
+then
+    mkdir tables
+fi
 scrapy runspider --nolog scraper.py
+# scrapy runspider --nolog scraper_fii.py
