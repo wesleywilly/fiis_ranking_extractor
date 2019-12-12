@@ -4,4 +4,8 @@ then
     mkdir tables
 fi
 scrapy runspider --nolog scraper.py
+#scrapy runspider scraper.py
+
 # scrapy runspider --nolog scraper_fii.py
+
+python top_fiis.py
