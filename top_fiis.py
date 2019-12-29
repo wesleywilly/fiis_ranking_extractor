@@ -83,15 +83,22 @@ else:
 
 df['Dif 1'] = abs(df['P/VPA']-1)
 
+#Intervalo aceitável do P/VPA
+pvpa_m = df['P/VPA'].median()
+pvpa_des = abs(1-pvpa_m)
+pvpa_max = 1 + pvpa_des
+#pvpa_min = 0
+pvpa_min = 1 - pvpa_des
+
 #Score
 df['Score'] = (
     (df['Dividend Yield ']-df['Dividend Yield '].min())/(df['Dividend Yield '].max()-df['Dividend Yield '].min()))*0.15+(
-    (df['DY (12M) Acumulado']-df['DY (12M) Acumulado'].min())/(df['DY (12M) Acumulado'].max()-df['DY (12M) Acumulado'].min()))*0.2+(
+    (df['DY (12M) Acumulado']-df['DY (12M) Acumulado'].min())/(df['DY (12M) Acumulado'].max()-df['DY (12M) Acumulado'].min()))*0.1+(
     (df['DY (12M) Média']-df['DY (12M) Média'].min())/(df['DY (12M) Média'].max()-df['DY (12M) Média'].min()))*0.3+(
     (df['Rentab. Acumulada']-df['Rentab. Acumulada'].min())/(df['Rentab. Acumulada'].max()-df['Rentab. Acumulada'].min()))*0.1+(
     (df['Liquidez Diária']-df['Liquidez Diária'].min())/(df['Liquidez Diária'].max()-df['Liquidez Diária'].min()))*0.1+(
     1-((df['Dif 1']-df['Dif 1'].min())/(df['Dif 1'].max()-df['Dif 1'].min())))*0.1+(
-    (df['Quantidade Ativos']-df['Quantidade Ativos'].min())/(df['Quantidade Ativos'].max()-df['Quantidade Ativos'].min()))*0.05
+    (df['Quantidade Ativos']-df['Quantidade Ativos'].min())/(df['Quantidade Ativos'].max()-df['Quantidade Ativos'].min()))*0.15
 
 #Lista Desesejos
 wish_list =['HGRE11','GGRC11','VILG11','XPML11']
@@ -103,11 +110,6 @@ carteira_wesley = ['MGFF11','CBOP11','XPIN11','MALL11','RBRF11','FLMA11','HFOF11
 black_list = ['XPCM11','PORD11','FAMB11B','RBCB11','TFOF11','BBFI11B','CXCE11B','NVIF11B','CPTS11B','VTLT11','RBVO11','CEOC11','KNIP11','RBBV11','MBRF11','MFII11']
 black_list_setor = ['Hospital','Residencial']
 
-#Intervalo aceitável do P/VPA
-pvpa_m = df['P/VPA'].median()
-pvpa_des = abs(1-pvpa_m)
-pvpa_max = 1 + pvpa_des
-pvpa_min = 1 - pvpa_des
 
 #liquidez Diária mínima
 ld_min = df['Liquidez Diária'].quantile(0.25)
@@ -122,11 +124,22 @@ vfinanc_max = 10
 
 #Filtro
 #dff = df[df['P/VPA']<=pvpa_max][df['P/VPA']>=pvpa_min][df['Liquidez Diária']>ld_min][df['Dividend Yield ']>selic_am][df['DY (12M) Acumulado']>selic_aa][~df['Código do fundo'].isin(black_list)][~df['Setor'].isin(black_list_setor)][~(df['Vacância Física']>=10)][~(df['Vacância Financeira']>=10)].sort_values(by='Score', ascending=False, na_position='last')
-dff = df[df['Dif 1']<=df['Dif 1'].quantile(0.25)][df['Liquidez Diária']>ld_min][
+pvpa_max_limit = 1+df['Dif 1'].quantile(0.25)
+print('p/vpa max: ', pvpa_max_limit)
+
+dff = df[df['P/VPA']<=pvpa_max_limit][df['Liquidez Diária']>ld_min][
     df['Dividend Yield ']>selic_am][df['DY (12M) Acumulado']>selic_aa][
     ~df['Código do fundo'].isin(black_list)][~df['Setor'].isin(black_list_setor)][
     ~(df['Vacância Física']>=10)][~(df['Vacância Financeira']>=10)].sort_values(
     by='Score', ascending=False, na_position='last')
+
+#dff = df[df['P/VPA']>=pvpa_min][df['P/VPA']<=pvpa_max][df['Liquidez Diária']>ld_min][
+#    df['Dividend Yield ']>selic_am][df['DY (12M) Acumulado']>selic_aa][
+#    ~df['Código do fundo'].isin(black_list)][~df['Setor'].isin(black_list_setor)][
+#    ~(df['Vacância Física']>=10)][~(df['Vacância Financeira']>=10)].sort_values(
+#    by='Score', ascending=False, na_position='last')
+
+
 
 dff['Preço Compra MAX'] = dff['VPA']+dff['VPA']*df['Dif 1'].quantile(0.25)
 dff['Preço Compra MIN'] = dff['VPA']-dff['VPA']*df['Dif 1'].quantile(0.5)
